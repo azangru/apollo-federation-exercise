@@ -12,7 +12,7 @@ const typeDefs = gql`
 
   extend type Gene @key(fields: "symbol") {
     symbol: String! @external
-    transcripts: [Transcript]
+    transcripts: [Transcript]!
   }
 `;
 
@@ -33,9 +33,9 @@ const resolvers = {
     }
   },
   Gene: {
-    transcripts() {
+    transcripts(...args) {
       console.log('got to transcripts');
-      return [{ symbol: 'finally!' }]
+      return [{ __typename: "Transcript", symbol: 'finally!' }]
     }
   }
 };

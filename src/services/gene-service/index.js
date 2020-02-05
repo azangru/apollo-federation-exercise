@@ -18,10 +18,10 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    gene(symbol) {
-      console.log('in query gene resolver', symbol);
+    gene(_, args) {
+      console.log('in query gene resolver');
       return {
-        symbol: 'hello'
+        symbol: args.symbol
       };
     }
   },
@@ -35,7 +35,7 @@ const resolvers = {
   },
   Transcript: {
     gene() {
-      return { symbol: 'gene in transcript in gene' }
+      return { __typename: "Gene", symbol: 'gene in transcript in gene' }
     }
   }
 };
