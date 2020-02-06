@@ -1,28 +1,32 @@
 const { ApolloServer, gql } = require("apollo-server");
 const { buildFederatedSchema } = require("@apollo/federation");
 
+const { fetchGene } = require('./fetch-gene');
+
 const typeDefs = gql`
   extend type Query {
-    gene(symbol: String): Gene
+    gene(id: String): Gene
   }
 
-  type Gene @key(fields: "symbol") {
+  type Gene @key(fields: "id") {
+    id: String!
     symbol: String!
+    description: String
+    start: Int!
+    end: Int!
+    transcripts: [Transcript!]!
   }
 
-  extend type Transcript @key(fields: "symbol") {
-    symbol: String! @external
+  extend type Transcript @key(fields: "id") {
+    id: String! @external
     gene: Gene
   }
 `;
 
 const resolvers = {
   Query: {
-    gene(_, args) {
-      console.log('in query gene resolver');
-      return {
-        symbol: args.symbol
-      };
+    async gene(_, args) {
+      return await fetchGene(args.id);
     }
   },
   Gene: {
@@ -31,6 +35,9 @@ const resolvers = {
       return {
         symbol: fields.symbol
       };
+    },
+    transcripts(gene) {
+      return gene.transcripts.map(id => ({ __typename: "Transcript", id }));
     }
   },
   Transcript: {

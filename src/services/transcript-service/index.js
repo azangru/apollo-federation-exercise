@@ -1,18 +1,18 @@
 const { ApolloServer, gql } = require("apollo-server");
 const { buildFederatedSchema } = require("@apollo/federation");
 
+const { fetchTranscript } = require('./fetch-transcript');
+
 const typeDefs = gql`
   extend type Query {
     transcript: Transcript
   }
 
-  type Transcript @key(fields: "symbol") {
+  type Transcript @key(fields: "id") {
+    id: String!
     symbol: String!
-  }
-
-  extend type Gene @key(fields: "symbol") {
-    symbol: String! @external
-    transcripts: [Transcript]!
+    start: Int!
+    end: Int!
   }
 `;
 
@@ -24,18 +24,13 @@ const resolvers = {
       };
     }
   },
-  Transript: {
-    __resolveReference(fields) {
-      console.log('transcript __resolveReference')
-      return {
-        symbol: fields.symbol
-      };
-    }
-  },
-  Gene: {
-    transcripts(...args) {
-      console.log('got to transcripts');
-      return [{ __typename: "Transcript", symbol: 'finally!' }]
+  Transcript: {
+    async __resolveReference({ id }) {
+      return await fetchTranscript(id);
+      // return {
+      //   id: fields.id,
+      //   symbol: 'hooooooo',
+      // };
     }
   }
 };
