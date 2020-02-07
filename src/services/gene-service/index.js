@@ -19,7 +19,8 @@ const typeDefs = gql`
 
   extend type Transcript @key(fields: "id") {
     id: String! @external
-    gene: Gene
+    geneId: String! @external
+    gene: Gene @requires(fields: "geneId")
   }
 `;
 
@@ -41,8 +42,8 @@ const resolvers = {
     }
   },
   Transcript: {
-    gene() {
-      return { __typename: "Gene", symbol: 'gene in transcript in gene' }
+    async gene({geneId}) {
+      return await fetchGene(geneId);
     }
   }
 };

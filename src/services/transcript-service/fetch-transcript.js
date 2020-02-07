@@ -10,7 +10,8 @@ const fetchTranscript = async (id) => {
     id: body.id,
     start: body.start,
     end: body.end,
-    symbol: body.display_name
+    symbol: body.display_name,
+    geneId: body.Parent
   };
 }
 

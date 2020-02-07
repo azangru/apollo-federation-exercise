@@ -5,11 +5,12 @@ const { fetchTranscript } = require('./fetch-transcript');
 
 const typeDefs = gql`
   extend type Query {
-    transcript: Transcript
+    transcript(id: String): Transcript
   }
 
   type Transcript @key(fields: "id") {
     id: String!
+    geneId: String!
     symbol: String!
     start: Int!
     end: Int!
@@ -18,19 +19,13 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    transcript() {
-      return {
-        symbol: 'transcript symbol'
-      };
+    async transcript(_, args) {
+      return await fetchTranscript(args.id);
     }
   },
   Transcript: {
     async __resolveReference({ id }) {
       return await fetchTranscript(id);
-      // return {
-      //   id: fields.id,
-      //   symbol: 'hooooooo',
-      // };
     }
   }
 };
