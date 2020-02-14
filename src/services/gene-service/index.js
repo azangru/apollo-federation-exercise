@@ -32,7 +32,6 @@ const resolvers = {
   },
   Gene: {
     __resolveReference(fields) {
-      console.log('gene in resolveReference');
       return {
         symbol: fields.symbol
       };
