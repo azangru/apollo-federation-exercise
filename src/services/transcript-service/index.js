@@ -2,6 +2,7 @@ const { ApolloServer, gql } = require("apollo-server");
 const { buildFederatedSchema } = require("@apollo/federation");
 
 const { fetchTranscript } = require('./fetch-transcript');
+const { fetchGeneTranscripts } = require('./fetch-gene-transcripts');
 
 const typeDefs = gql`
   extend type Query {
@@ -15,6 +16,11 @@ const typeDefs = gql`
     start: Int!
     end: Int!
   }
+
+  extend type Gene @key(fields: "id") {
+    id: String! @external
+    transcripts: [Transcript!]!
+  }
 `;
 
 const resolvers = {
@@ -26,6 +32,11 @@ const resolvers = {
   Transcript: {
     async __resolveReference({ id }) {
       return await fetchTranscript(id);
+    }
+  },
+  Gene: {
+    async transcripts({ id: geneId }) {
+      return await fetchGeneTranscripts(geneId);
     }
   }
 };

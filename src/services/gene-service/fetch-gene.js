@@ -12,8 +12,7 @@ const fetchGene = async (id) => {
     start: body.start,
     end: body.end,
     symbol: body.display_name,
-    description: body.description,
-    transcripts: body.Transcript.slice(0, 5).map(({id}) => id)
+    description: body.description
   };
 }
 

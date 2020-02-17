@@ -14,7 +14,6 @@ const typeDefs = gql`
     description: String
     start: Int!
     end: Int!
-    transcripts: [Transcript!]!
   }
 
   extend type Transcript @key(fields: "id") {
@@ -36,9 +35,10 @@ const resolvers = {
         symbol: fields.symbol
       };
     },
-    transcripts(gene) {
-      return gene.transcripts.map(id => ({ __typename: "Transcript", id }));
-    }
+    // NOTE: this is the way to resolve multiple external objects, if required
+    // transcripts(gene) {
+    //   return gene.transcripts.map(id => ({ __typename: "Transcript", id }));
+    // }
   },
   Transcript: {
     async gene({geneId}) {
